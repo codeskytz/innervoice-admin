@@ -5,6 +5,8 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UsersPage } from './pages/UsersPage';
 import { CategoriesPage } from './pages/CategoriesPage';
+import { CreditsPage } from './pages/CreditsPage';
+import { ReferralSettingsPage } from './pages/ReferralSettingsPage';
 import { useNavigate, useLocation } from 'react-router';
 import { useEffect } from 'react';
 
@@ -28,6 +30,8 @@ function AppContent() {
             {location.pathname === '/dashboard' && <DashboardPage />}
             {location.pathname === '/users' && <UsersPage />}
             {location.pathname === '/categories' && <CategoriesPage />}
+            {location.pathname === '/credits' && <CreditsPage />}
+            {location.pathname === '/referral-settings' && <ReferralSettingsPage />}
           </SidebarLayout>
         </ProtectedRoute>
       )}

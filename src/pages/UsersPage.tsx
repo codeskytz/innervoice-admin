@@ -114,7 +114,7 @@ export function UsersPage() {
                 </th>
               </tr>
             </thead>
-            <tbody divide-y>
+            <tbody className="divide-y divide-gray-200">
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">

@@ -27,6 +27,28 @@ export interface Stats {
   totalCategories: number;
 }
 
+export interface CreditPackage {
+  id: number;
+  name: string;
+  credits: number;
+  price_tzs: number;
+  bonus: number;
+  is_popular: boolean;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReferralSettings {
+  id?: number;
+  referral_bonus_tzs: number;
+  referral_withdraw_min_tzs: number;
+  rate_tzs_per_credit: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface AdminLoginResponse {
   token: string;
   user: User;
@@ -204,6 +226,117 @@ class AdminApiService {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to update category');
+    }
+
+    return response.json();
+  }
+
+  // Credit packages
+  async getCreditPackages(token: string): Promise<{ data: CreditPackage[] }> {
+    const response = await fetch(`${this.baseUrl}/admin/credit-packages`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch credit packages');
+    }
+
+    return response.json();
+  }
+
+  async createCreditPackage(token: string, data: Partial<CreditPackage>): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/credit-packages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create credit package');
+    }
+
+    return response.json();
+  }
+
+  async updateCreditPackage(token: string, id: number, data: Partial<CreditPackage>): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/credit-packages/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update credit package');
+    }
+
+    return response.json();
+  }
+
+  async deleteCreditPackage(token: string, id: number): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/admin/credit-packages/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete credit package');
+    }
+
+    return response.json();
+  }
+
+  // Referral settings
+  async getReferralSettings(token: string): Promise<{ data: ReferralSettings }> {
+    const response = await fetch(`${this.baseUrl}/admin/referral-settings`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch referral settings');
+    }
+
+    return response.json();
+  }
+
+  async updateReferralSettings(
+    token: string,
+    data: ReferralSettings
+  ): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/referral-settings`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        referral_bonus_tzs: data.referral_bonus_tzs,
+        referral_withdraw_min_tzs: data.referral_withdraw_min_tzs,
+        rate_tzs_per_credit: data.rate_tzs_per_credit,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update referral settings');
     }
 
     return response.json();

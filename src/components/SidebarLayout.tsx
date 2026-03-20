@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { useAdmin } from '../contexts/AdminContext';
-import { Menu, X, LogOut, BarChart3, Users, Tag } from 'lucide-react';
+import { Menu, X, LogOut, BarChart3, Users, Tag, Coins, Gift } from 'lucide-react';
 
 interface SidebarLayoutProps {
   children: ReactNode;
@@ -18,6 +18,8 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
     { label: 'Dashboard', path: '/dashboard', icon: BarChart3 },
     { label: 'Users', path: '/users', icon: Users },
     { label: 'Categories', path: '/categories', icon: Tag },
+    { label: 'Credit Packages', path: '/credits', icon: Coins },
+    { label: 'Referral Settings', path: '/referral-settings', icon: Gift },
   ];
 
   const handleLogout = async () => {

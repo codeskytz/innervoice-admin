@@ -1,10 +1,17 @@
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAdmin } from '../contexts/AdminContext';
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAdmin();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   if (isLoading) {
     return (
@@ -15,7 +22,6 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    navigate('/login');
     return null;
   }
 
