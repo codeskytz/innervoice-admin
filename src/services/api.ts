@@ -25,6 +25,8 @@ export interface Stats {
   adminUsers: number;
   totalConfessions: number;
   totalCategories: number;
+  totalCommunities: number;
+  totalRevenue: number;
 }
 
 export interface CreditPackage {

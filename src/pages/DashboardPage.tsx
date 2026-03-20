@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAdmin } from '../contexts/AdminContext';
 import adminApi from '../services/api';
 import type { Stats } from '../services/api';
-import { BarChart3, Users, Tag, CheckCircle, FileText } from 'lucide-react';
+import { BarChart3, Users, Tag, CheckCircle, FileText, Globe2, Banknote } from 'lucide-react';
 
 export function DashboardPage() {
   const { token } = useAdmin();
@@ -74,6 +74,18 @@ export function DashboardPage() {
       icon: Tag,
       color: 'pink',
     },
+    {
+      label: 'Total Communities',
+      value: stats?.totalCommunities || 0,
+      icon: Globe2,
+      color: 'blue',
+    },
+    {
+      label: 'Total Revenue (TZS)',
+      value: stats?.totalRevenue || 0,
+      icon: Banknote,
+      color: 'green',
+    },
   ];
 
   const colorClasses = {
@@ -121,13 +133,12 @@ export function DashboardPage() {
                 <div
                   className="bg-green-500 h-3 rounded-full"
                   style={{
-                    width: `${
-                      stats
+                    width: `${stats
                         ? Math.round(
-                            (stats.verifiedUsers / stats.totalUsers) * 100
-                          )
+                          (stats.verifiedUsers / stats.totalUsers) * 100
+                        )
                         : 0
-                    }%`,
+                      }%`,
                   }}
                 />
               </div>

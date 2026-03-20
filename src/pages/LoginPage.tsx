@@ -75,9 +75,7 @@ export function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-gray-600 text-sm mt-6">
-            Default: admin@innervoice.com / admin123
-          </p>
+
         </div>
       </div>
     </div>
