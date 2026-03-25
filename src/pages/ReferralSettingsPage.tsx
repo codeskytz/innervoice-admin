@@ -62,7 +62,7 @@ export function ReferralSettingsPage() {
         <div className="bg-white rounded-lg shadow p-6">Loading...</div>
       ) : (
         <form className="bg-white rounded-lg shadow p-6" onSubmit={handleSave}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Bonus Per Successful Invite (TZS)
@@ -95,7 +95,7 @@ export function ReferralSettingsPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                TZS Per Credit (Conversion Rate)
+                Legacy Rate (TZS Per Credit)
               </label>
               <input
                 type="number"
@@ -106,7 +106,86 @@ export function ReferralSettingsPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Example: if rate is 100, 100 TZS converts into 1 credit.
+                Deprecated: Use Buy/Sell rates below.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Buy Rate (TZS per Credit)
+              </label>
+              <input
+                type="number"
+                min={1}
+                value={settings.buy_rate_tzs_per_credit}
+                onChange={(e) => setSettings((s) => (s ? { ...s, buy_rate_tzs_per_credit: Number(e.target.value) } : s))}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Rate when users buy credits with money.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Sell Rate (TZS per Credit)
+              </label>
+              <input
+                type="number"
+                min={1}
+                value={settings.sell_rate_tzs_per_credit}
+                onChange={(e) => setSettings((s) => (s ? { ...s, sell_rate_tzs_per_credit: Number(e.target.value) } : s))}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Rate when users sell credits for money.
+              </p>
+            </div>
+          </div>
+
+          <hr className="my-6 border-gray-200" />
+
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Currency Exchange Rates</h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Set exchange rates relative to TZS (Tanzanian Shilling). These rates are used for displaying prices in user's preferred currency.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                USD to TZS Rate
+              </label>
+              <input
+                type="number"
+                min={1}
+                step="0.01"
+                value={settings.usd_to_tzs_rate}
+                onChange={(e) => setSettings((s) => (s ? { ...s, usd_to_tzs_rate: Number(e.target.value) } : s))}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                1 USD = {settings.usd_to_tzs_rate} TZS
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                KSH to TZS Rate
+              </label>
+              <input
+                type="number"
+                min={1}
+                step="0.01"
+                value={settings.ksh_to_tzs_rate}
+                onChange={(e) => setSettings((s) => (s ? { ...s, ksh_to_tzs_rate: Number(e.target.value) } : s))}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                1 KSH = {settings.ksh_to_tzs_rate} TZS
               </p>
             </div>
           </div>
@@ -126,4 +205,3 @@ export function ReferralSettingsPage() {
     </div>
   );
 }
-

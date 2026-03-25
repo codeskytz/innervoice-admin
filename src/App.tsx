@@ -7,6 +7,8 @@ import { UsersPage } from './pages/UsersPage';
 import { CategoriesPage } from './pages/CategoriesPage';
 import { CreditsPage } from './pages/CreditsPage';
 import { ReferralSettingsPage } from './pages/ReferralSettingsPage';
+import { WithdrawalsPage } from './pages/WithdrawalsPage';
+import { AppVersionsPage } from './pages/AppVersionsPage';
 import { useNavigate, useLocation } from 'react-router';
 import { useEffect } from 'react';
 
@@ -32,6 +34,8 @@ function AppContent() {
             {location.pathname === '/categories' && <CategoriesPage />}
             {location.pathname === '/credits' && <CreditsPage />}
             {location.pathname === '/referral-settings' && <ReferralSettingsPage />}
+            {location.pathname === '/withdrawals' && <WithdrawalsPage />}
+            {location.pathname === '/app-versions' && <AppVersionsPage />}
           </SidebarLayout>
         </ProtectedRoute>
       )}

@@ -47,6 +47,10 @@ export interface ReferralSettings {
   referral_bonus_tzs: number;
   referral_withdraw_min_tzs: number;
   rate_tzs_per_credit: number;
+  buy_rate_tzs_per_credit: number;
+  sell_rate_tzs_per_credit: number;
+  usd_to_tzs_rate: number;
+  ksh_to_tzs_rate: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -333,6 +337,10 @@ class AdminApiService {
         referral_bonus_tzs: data.referral_bonus_tzs,
         referral_withdraw_min_tzs: data.referral_withdraw_min_tzs,
         rate_tzs_per_credit: data.rate_tzs_per_credit,
+        buy_rate_tzs_per_credit: data.buy_rate_tzs_per_credit,
+        sell_rate_tzs_per_credit: data.sell_rate_tzs_per_credit,
+        usd_to_tzs_rate: data.usd_to_tzs_rate,
+        ksh_to_tzs_rate: data.ksh_to_tzs_rate,
       }),
     });
 
@@ -377,7 +385,136 @@ class AdminApiService {
 
     return response.json();
   }
+
+  // Withdrawals
+  async getWithdrawals(token: string, status = 'pending'): Promise<{ data: any[] }> {
+    const response = await fetch(`${this.baseUrl}/admin/withdrawals?status=${status}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch withdrawals');
+    }
+
+    return response.json();
+  }
+
+  async approveWithdrawal(token: string, id: number, adminNotes?: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/withdrawals/${id}/approve`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ admin_notes: adminNotes }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to approve withdrawal');
+    }
+
+    return response.json();
+  }
+
+  async rejectWithdrawal(token: string, id: number, adminNotes: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/withdrawals/${id}/reject`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ admin_notes: adminNotes }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to reject withdrawal');
+    }
+
+    return response.json();
+  }
+
+  // App Versions
+  async getAppVersions(token: string): Promise<any> {
+    const url = `${this.baseUrl}/admin/app-versions`;
+    console.log('Fetching app versions from:', url);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('App versions fetch failed:', response.status, errorText);
+      throw new Error(`Failed to fetch app versions: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  async createAppVersion(token: string, data: any): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/app-versions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to create app version');
+    }
+
+    return response.json();
+  }
+
+  async updateAppVersion(token: string, id: number, data: any): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/app-versions/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update app version');
+    }
+
+    return response.json();
+  }
+
+  async deleteAppVersion(token: string, id: number): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/app-versions/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to delete app version');
+    }
+
+    return response.json();
+  }
 }
 
 const adminApi = new AdminApiService(import.meta.env.VITE_API_URL || 'http://localhost:8000/api');
+export { adminApi };
 export default adminApi;
