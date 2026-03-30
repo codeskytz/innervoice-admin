@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { useAdmin } from '../contexts/AdminContext';
-import { Menu, X, LogOut, BarChart3, Users, Tag, Coins, Gift, Wallet, Smartphone } from 'lucide-react';
+import { Menu, X, LogOut, BarChart3, Users, Tag, Coins, Gift, Wallet, Smartphone, Mail, Image } from 'lucide-react';
 
 interface SidebarLayoutProps {
   children: ReactNode;
@@ -19,7 +19,9 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
     { label: 'Users', path: '/users', icon: Users },
     { label: 'Categories', path: '/categories', icon: Tag },
     { label: 'Credit Packages', path: '/credits', icon: Coins },
+    { label: 'Banners', path: '/banners', icon: Image },
     { label: 'Withdrawals', path: '/withdrawals', icon: Wallet },
+    { label: 'Contact Messages', path: '/contact-messages', icon: Mail },
     { label: 'Referral Settings', path: '/referral-settings', icon: Gift },
     { label: 'App Versions', path: '/app-versions', icon: Smartphone },
   ];

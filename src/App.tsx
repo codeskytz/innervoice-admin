@@ -9,6 +9,8 @@ import { CreditsPage } from './pages/CreditsPage';
 import { ReferralSettingsPage } from './pages/ReferralSettingsPage';
 import { WithdrawalsPage } from './pages/WithdrawalsPage';
 import { AppVersionsPage } from './pages/AppVersionsPage';
+import { ContactMessagesPage } from './pages/ContactMessagesPage';
+import { BannersPage } from './pages/BannersPage';
 import { useNavigate, useLocation } from 'react-router';
 import { useEffect } from 'react';
 
@@ -35,7 +37,9 @@ function AppContent() {
             {location.pathname === '/credits' && <CreditsPage />}
             {location.pathname === '/referral-settings' && <ReferralSettingsPage />}
             {location.pathname === '/withdrawals' && <WithdrawalsPage />}
+            {location.pathname === '/contact-messages' && <ContactMessagesPage />}
             {location.pathname === '/app-versions' && <AppVersionsPage />}
+            {location.pathname === '/banners' && <BannersPage />}
           </SidebarLayout>
         </ProtectedRoute>
       )}

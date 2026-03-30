@@ -55,6 +55,42 @@ export interface ReferralSettings {
   updated_at?: string;
 }
 
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: 'pending' | 'read' | 'replied';
+  admin_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ContactSettings {
+  id: number;
+  support_email: string;
+  support_phone: string;
+  office_hours: string;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Banner {
+  id: number;
+  title: string | null;
+  image_url: string;
+  link_url: string | null;
+  description: string | null;
+  sort_order: number;
+  is_active: boolean;
+  start_date: string | null;
+  end_date: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AdminLoginResponse {
   token: string;
   user: User;
@@ -509,6 +545,204 @@ class AdminApiService {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to delete app version');
+    }
+
+    return response.json();
+  }
+
+  // Contact Messages
+  async getContactMessages(token: string, page = 1, status = '', search = ''): Promise<any> {
+    let url = `${this.baseUrl}/admin/contact-messages?page=${page}&per_page=10`;
+    if (status) url += `&status=${status}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact messages');
+    }
+
+    return response.json();
+  }
+
+  async getContactMessageStats(token: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-messages/stats`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact message stats');
+    }
+
+    return response.json();
+  }
+
+  async getContactMessage(token: string, id: number): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-messages/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact message');
+    }
+
+    return response.json();
+  }
+
+  async updateContactMessageStatus(token: string, id: number, status: string, adminNotes?: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-messages/${id}/status`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status, admin_notes: adminNotes }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update message status');
+    }
+
+    return response.json();
+  }
+
+  async deleteContactMessage(token: string, id: number): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-messages/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete contact message');
+    }
+
+    return response.json();
+  }
+
+  // Contact Settings
+  async getContactSettings(token: string): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-settings`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch contact settings');
+    }
+
+    return response.json();
+  }
+
+  async updateContactSettings(token: string, data: {
+    support_email: string;
+    support_phone: string;
+    office_hours: string;
+    enabled: boolean;
+  }): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/contact-settings`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update contact settings');
+    }
+
+    return response.json();
+  }
+
+  // Banners
+  async getBanners(token: string): Promise<{ data: Banner[] }> {
+    const response = await fetch(`${this.baseUrl}/admin/banners`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch banners');
+    }
+
+    return response.json();
+  }
+
+  async createBanner(token: string, data: FormData): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/banners`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: data,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const error = new Error(errorData.message || 'Failed to create banner');
+      (error as any).errors = errorData.errors;
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  async updateBanner(token: string, id: number, data: FormData): Promise<any> {
+    const response = await fetch(`${this.baseUrl}/admin/banners/${id}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: data,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      const error = new Error(errorData.message || 'Failed to update banner');
+      (error as any).errors = errorData.errors;
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  async deleteBanner(token: string, id: number): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/admin/banners/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete banner');
     }
 
     return response.json();
