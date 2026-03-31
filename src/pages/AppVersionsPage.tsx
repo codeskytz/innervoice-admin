@@ -7,6 +7,7 @@ interface AppVersion {
   id: number;
   platform: 'android' | 'ios';
   version: string;
+  min_required_version: string | null;
   version_code: number | null;
   download_url: string;
   store_url: string | null;
@@ -26,6 +27,7 @@ export function AppVersionsPage() {
   const [formData, setFormData] = useState({
     platform: 'android' as 'android' | 'ios',
     version: '',
+    min_required_version: '',
     version_code: '',
     download_url: '',
     store_url: '',
@@ -119,6 +121,7 @@ export function AppVersionsPage() {
     setFormData({
       platform: 'android',
       version: '',
+      min_required_version: '',
       version_code: '',
       download_url: '',
       store_url: '',
@@ -187,9 +190,9 @@ export function AppVersionsPage() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Platform</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Version</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Min Required</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Build</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Force Update</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Released</th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
@@ -211,6 +214,11 @@ export function AppVersionsPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-sm font-mono text-gray-600">
+                      {version.min_required_version || '-'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-gray-600">
                       {version.version_code || '-'}
                     </span>
@@ -224,17 +232,6 @@ export function AppVersionsPage() {
                       }`}
                     >
                       {version.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        version.is_force_update
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-blue-100 text-blue-800'
-                      }`}
-                    >
-                      {version.is_force_update ? 'Required' : 'Optional'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -271,7 +268,8 @@ export function AppVersionsPage() {
           <h3 className="font-semibold text-blue-800 mb-2">How it works</h3>
           <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
             <li>Users will be prompted to update when app starts</li>
-            <li>Set "Force Update" to prevent users from skipping</li>
+            <li>Set "Min Required Version" to block older app versions</li>
+            <li>Users below min required version cannot skip the update</li>
             <li>Version comparison uses semantic versioning (1.2.3)</li>
             <li>Inactive versions are ignored by the update checker</li>
           </ul>
@@ -336,6 +334,23 @@ export function AppVersionsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Min Required Version
+                </label>
+                <input
+                  type="text"
+                  value={formData.min_required_version}
+                  onChange={(e) => setFormData({ ...formData, min_required_version: e.target.value })}
+                  placeholder="e.g., 1.0.0"
+                  pattern="\d+\.\d+(\.\d+)*"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Users on versions below this will be forced to update.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Version Code (Android build number)
                 </label>
                 <input
@@ -396,7 +411,7 @@ export function AppVersionsPage() {
                     onChange={(e) => setFormData({ ...formData, is_force_update: e.target.checked })}
                     className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">Force Update (Users cannot skip)</span>
+                  <span className="text-sm text-gray-700">Legacy Force Update Flag</span>
                 </label>
               </div>
 
